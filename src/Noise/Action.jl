@@ -59,7 +59,7 @@ Convenience method to create an action noise with a constant covariance Σ, by d
 ActionNoise(
     A::AbstractGroupAction,
     Σ::PDMats.AbstractPDMat,
-    B=DefaultOrthonormalBasis()) = ActionNoise(A, ConstantFunction(Σ), B)
+    B=DefaultOrthonormalBasis()) = ActionNoise(A, Returns(Σ), B)
 
 """
     ActionNoise(A::GroupAction, σ::Number)
@@ -77,7 +77,7 @@ end
 
 rescale_noise(n::ActionNoise, scale) = ActionNoise(n.action, x -> scale^2*n.covariance(x), n.basis)
 
-rescale_noise(n::ActionNoise{<:Any,<:ConstantFunction}, scale) = ActionNoise(n.action, scale^2*n.covariance, n.basis)
+rescale_noise(n::ActionNoise{<:Any,<:Returns}, scale) = ActionNoise(n.action, Returns(scale^2*n.covariance.value), n.basis)
 
 """
     update_cov(n::ActionNoise, Σ)
@@ -137,7 +137,7 @@ function add_noise(
     return rand(rng, dist)
 end
 
-add_noise(noise::ActionNoise{<:Any, <:ConstantFunction}, rng::Random.AbstractRNG, point) = rand(rng, ProjLogNormal(point, noise))
+add_noise(noise::ActionNoise{<:Any, <:Returns}, rng::Random.AbstractRNG, point) = rand(rng, ProjLogNormal(point, noise))
 
 
 """

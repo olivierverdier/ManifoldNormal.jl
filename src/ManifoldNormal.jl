@@ -2,7 +2,6 @@ module ManifoldNormal
 
 using Manifolds
 import ManifoldsBase
-using ConstantFunctions
 
 import Random
 import Distributions

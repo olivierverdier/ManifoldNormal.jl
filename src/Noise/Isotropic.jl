@@ -23,11 +23,11 @@ Create an isotropic noise on the manifold `M`.
 The number `std` is then the *standard deviation*,
 which does not depend on the point of the manifold.
 """
-IsotropicNoise(M, std::Number) = IsotropicNoise(M, ConstantFunction(std))
+IsotropicNoise(M, std::Number) = IsotropicNoise(M, Returns(std))
 
 rescale_noise(n::IsotropicNoise, scale) = IsotropicNoise(n.manifold, x -> scale*n.deviation(x))
 
-rescale_noise(n::IsotropicNoise{<:Any,TF}, scale) where{TF<:ConstantFunction} = IsotropicNoise(n.manifold, scale*n.deviation)
+rescale_noise(n::IsotropicNoise{<:Any,TF}, scale) where{TF<:Returns} = IsotropicNoise(n.manifold, scale*n.deviation)
 
 
 function get_covariance_at(

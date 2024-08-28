@@ -4,7 +4,6 @@ authors = ["Olivier Verdier <olivier.verdier@gmail.com>"]
 version = "0.1.0"
 
 [deps]
-ConstantFunctions = "cf45d141-e7cd-45e6-bffc-f815329abbc7"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 ManifoldGroupUtils = "1a3c8808-2843-4c72-af8e-d50ed15039bf"
 Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
@@ -14,7 +13,6 @@ PDMatsSingular = "8b9ac4da-30d1-49d3-a564-69a6ecc8b6d7"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
-ConstantFunctions = "0.1"
 Distributions = "0"
 ManifoldGroupUtils = "0.1"
 Manifolds = "0.9"
