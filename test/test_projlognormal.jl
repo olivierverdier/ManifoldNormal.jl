@@ -1,5 +1,4 @@
 using Test
-using GeometricFilter
 using Manifolds
 
 import Random
@@ -10,11 +9,13 @@ import LinearAlgebra
 
 rng = Random.default_rng()
 
-@testset "Multiaffine action" begin
-    G = MultiDisplacement(2)
-    A = MultiAffineAction(G)
+@testset "Rotation action" begin
+    dim = 3
+    G = SpecialOrthogonal(dim)
+    A = RotationAction(Euclidean(dim), G)
     M = group_manifold(A)
     μ = zeros(manifold_dimension(M))
+    # μ = rand(rng, M)
     dG = manifold_dimension(G)
     mat = randn(rng, dG, dG)
     Σ = PDMats.PDMat(mat*mat')

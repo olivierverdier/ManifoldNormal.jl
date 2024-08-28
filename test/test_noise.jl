@@ -1,8 +1,6 @@
 using Manifolds: LinearAlgebra
 using Test
-using GeometricFilter
 using Manifolds
-import SparseArrays
 
 using PDMats
 import Random
@@ -34,7 +32,7 @@ end
     A = RotationAction(M, G)
     x = [1., 0, 0]
     noise = ActionNoise(A, 1.)
-    B = GeometricFilter.get_basis_at(noise, x)
+    B = ManifoldNormal.get_basis_at(noise, x)
     @test get_vector(M, x, [1., 0], B) ≈ [0,1,0]
 end
 
@@ -52,11 +50,11 @@ end
 @testset "Flat Action Noise" begin
     lin = [0 1.0; 0 0]
     trans = zeros(2)
-    motion = FlatAffineMotion(lin, trans)
-    A = AffineMotions.get_action(motion)
+    # motion = FlatAffineMotion(lin, trans)
+    # A = AffineMotions.get_action(motion)
 
     x0 = [0.0, 20]
-    observer = LinearObserver([1.0 0])
+    # observer = LinearObserver([1.0 0])
     onoise = ActionNoise(TranslationAction(Euclidean(1), TranslationGroup(1)), 10.0)
     @test get_covariance_at(onoise, 0, DefaultOrthonormalBasis()) isa PDMats.AbstractPDMat
 end
@@ -75,6 +73,7 @@ end
     @test 2*update_cov(an, PDMats.ScalMat(3,1/4)) == an
 end
 
+
 @testset "Test Action Noise" begin
     G = SpecialOrthogonal(3)
     S = Sphere(2)
@@ -86,15 +85,7 @@ end
     σ = 4.0
     noise = ActionNoise(A, PDMats.ScalMat(manifold_dimension(G), σ), BG)
     cov = get_covariance_at(noise, x, BM)
-    @test GeometricFilter.get_lie_covariance_at(noise, x, BG) == PDMats.ScalMat(3, σ)
+    @test ManifoldNormal.get_lie_covariance_at(noise, x, BG) == PDMats.ScalMat(3, σ)
     @test cov == PDMats.ScalMat(2, σ)
-    @test GeometricFilter.rigid_perturbation(rng, noise, x) isa RigidMotion
 
-    @testset "Degenerate Covariance $cov" for cov in [
-        PDMatsSingular.Covariance(PDiagMat(SparseArrays.sparsevec([1,0,0]))),
-         PDiagMat([1,0,0])
-        ]
-        dnoise = ActionNoise(A, cov)
-        rmot = GeometricFilter.rigid_perturbation(rng, dnoise, x)
-    end
 end

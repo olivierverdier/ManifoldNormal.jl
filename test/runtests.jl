@@ -1,6 +1,5 @@
 using ManifoldNormal
 using Test
 
-@testset "ManifoldNormal.jl" begin
-    # Write your tests here.
-end
+include("test_noise.jl")
+include("test_projlognormal.jl")
