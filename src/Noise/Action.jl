@@ -139,7 +139,7 @@ end
 
 add_noise(noise::ActionNoise{<:Any, <:Returns}, rng::Random.AbstractRNG, point) = rand(rng, ProjLogNormal(point, noise))
 
-
+# COV_EXCL_START
 """
 Obsolete: in this basis, the covariance matrix is the identity.
 """
@@ -151,3 +151,4 @@ function get_adapted_basis_at(noise::ActionNoise, x)
     vec_mat = res.U .* res.S'
     return CachedBasis(DefaultOrthonormalBasis(), collect(eachcol(vec_mat)))
 end
+# COV_EXCL_STOP

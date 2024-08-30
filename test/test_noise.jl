@@ -114,7 +114,11 @@ end
     σ = 4.0
     noise = ActionNoise(A, PDMats.ScalMat(manifold_dimension(G), σ), BG)
     cov = get_covariance_at(noise, x, BM)
-    @test ManifoldNormal.get_lie_covariance_at(noise, x, BG) == PDMats.ScalMat(3, σ)
+    computed = ManifoldNormal.get_lie_covariance_at(noise, x, BG)
+    @test isapprox(ManifoldNormal.get_lie_covariance_at(noise, x), computed)
+    expected = PDMats.ScalMat(3, σ)
+    @test isapprox(computed, expected)
+    @test_throws ErrorException ManifoldNormal.get_lie_covariance_at(noise, [0,0,0])
     @test cov == PDMats.ScalMat(2, σ)
 
 end
