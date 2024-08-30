@@ -100,6 +100,7 @@ end
     an_ = ActionNoise(A, PDMats.ScalMat(3, 1.), B)
     @test get_covariance_at(2*an, Identity(G), B) == 4*LinearAlgebra.diagm(ones(manifold_dimension(G)))
     @test 2*update_cov(an, PDMats.ScalMat(3,1/4)) == an
+    @test_throws ErrorException get_covariance_at(an, Identity(G), DefaultOrthogonalBasis())
 end
 
 

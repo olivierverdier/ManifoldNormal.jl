@@ -52,6 +52,8 @@ end
     B = DefaultOrthonormalBasis()
     dist = ProjLogNormal(A, μ, Σ, B)
     noise = action_noise(dist)
+    @test length(dist) == 2
     @test noise(rng, μ) ≈ μ
+    @test startswith(sprint(show, dist), "ProjLogNormal")
 end
 
