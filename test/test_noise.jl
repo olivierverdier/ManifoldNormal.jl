@@ -8,6 +8,18 @@ rng = Random.default_rng()
 
 
 
+@testset "No Noise" begin
+    M = Euclidean(3)
+    G = SpecialOrthogonal(3)
+    A = RotationAction(M, G)
+    noises = [NoNoise(M), IsotropicNoise(M, 0.), ActionNoise(A, 0.)]
+    @testset for noise in noises
+        M = sample_space(noise)
+        x = rand(rng, M)
+        x_ = noise(rng, x)
+        @test isapprox(M, x, x_)
+    end
+end
 
 @testset "Test Noise" begin
     G = Orthogonal(3)
