@@ -19,12 +19,6 @@ Covariance on Alg(G), where G is the action group.
 """
 function get_lie_covariance_at end
 
-"""
-    get_group(::AbstractActionNoise) :: AbstractDecoratedManifold
-
-The group on which this noise model is defined.
-"""
-function get_group end
 #--------------------------------
 
 @doc raw"""
@@ -48,7 +42,6 @@ end
 Base.show(io::IO, n::ActionNoise) = print(io, "ActionNoise($(n.action), $(n.covariance), $(n.basis))")
 
 
-get_group(a::ActionNoise)  = base_group(a.action)
 sample_space(a::ActionNoise)  = group_manifold(a.action)
 
 """
