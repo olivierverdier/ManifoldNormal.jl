@@ -8,16 +8,33 @@ rng = Random.default_rng()
 
 
 
-@testset "No Noise" begin
-    M = Euclidean(3)
-    G = SpecialOrthogonal(3)
-    A = RotationAction(M, G)
-    noises = [NoNoise(M), IsotropicNoise(M, 0.), ActionNoise(A, 0.)]
-    @testset for noise in noises
+@testset "Basic" begin
+    dim = 3
+    M = Euclidean(dim)
+    G = TranslationGroup(dim)
+    A = TranslationAction(M, G)
+    δ = 2.
+    noises = [
+        NoNoise(M),
+        IsotropicNoise(M, δ),
+        IsotropicNoise(M, x -> δ),
+        ActionNoise(A, δ^2),
+        ActionNoise(A, x -> PDMats.ScalMat(dim, δ^2), DefaultOrthogonalBasis()),
+    ]
+    @testset "$noise" for noise in noises
         M = sample_space(noise)
         x = rand(rng, M)
+        cov = get_covariance_at(noise, x, DefaultOrthonormalBasis())
+        if noise isa NoNoise
+            expected = PDMats.ScalMat(dim, 0.)
+        else
+            expected = PDMats.ScalMat(dim, δ^2)
+        end
+        @test isapprox(cov, expected)
         x_ = noise(rng, x)
-        @test isapprox(M, x, x_)
+        scaled = 0.0 * noise
+        x__ = scaled(rng, x)
+        @test isapprox(M, x, x__)
     end
 end
 

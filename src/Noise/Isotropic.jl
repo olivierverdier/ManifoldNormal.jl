@@ -34,7 +34,7 @@ function get_covariance_at(
     noise::IsotropicNoise,
     point,
     ::Union{CachedBasis{𝔽,DefaultOrthonormalBasis{𝔽}},
-             DefaultOrthonormalBasis}
+            DefaultOrthonormalBasis}
 ) where {𝔽}
     dim = manifold_dimension(sample_space(noise))
     return PDMats.ScalMat(dim, noise.deviation(point)^2)
