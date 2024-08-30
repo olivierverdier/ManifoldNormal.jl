@@ -27,7 +27,7 @@ IsotropicNoise(M, std::Number) = IsotropicNoise(M, Returns(std))
 
 rescale_noise(n::IsotropicNoise, scale) = IsotropicNoise(n.manifold, x -> scale*n.deviation(x))
 
-rescale_noise(n::IsotropicNoise{<:Any,TF}, scale) where{TF<:Returns} = IsotropicNoise(n.manifold, scale*n.deviation)
+rescale_noise(n::IsotropicNoise{<:Any,<:Returns}, scale) = IsotropicNoise(n.manifold, Returns(scale*n.deviation.value))
 
 
 function get_covariance_at(
