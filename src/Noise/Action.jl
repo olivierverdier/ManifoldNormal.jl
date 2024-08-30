@@ -27,7 +27,7 @@ The group on which this noise model is defined.
 function get_group end
 #--------------------------------
 
-"""
+@doc raw"""
     ActionNoise(
         action, # group action G ⊂ Diff(M)
         covariance, # function M -> AbstractPDMat
@@ -37,7 +37,7 @@ function get_group end
 Covariance defined on Lie algebra.
 The corresponding distribution centred at x₀ 
 is the push forward of the normal distribution on the Lie
-algebra by the function ξ ↦ exp(ξ)⋅x₀.
+algebra by the function ξ ↦ \exp(ξ)⋅x₀.
 """
 struct ActionNoise{TA,TF<:Function,TB}  <: AbstractActionNoise{TA}
     action::TA # group action G ⊂ Diff(M)
@@ -54,7 +54,7 @@ sample_space(a::ActionNoise)  = group_manifold(a.action)
 """
     ActionNoise(A::GroupAction, Σ::PDMat)
 
-Convenience method to create an action noise with a constant covariance Σ, by default with respect to the standard metric of the Lie algebra.
+Convenience method to create an action noise with a constant covariance Σ, by default with respect to the standard scalar product of the Lie algebra.
 """
 ActionNoise(
     A::AbstractGroupAction,

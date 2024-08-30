@@ -107,7 +107,7 @@ end
 """
     action_noise(D::ProjLogNormal) :: ActionNoise
 
-Create an action noise object from a ProjLogNormal distribution.
+Create an action noise object from a `ProjLogNormal` distribution.
 This is simply an action noise with constant covariance.
 """
 action_noise(D::AbstractProjLogNormal) = D.noise

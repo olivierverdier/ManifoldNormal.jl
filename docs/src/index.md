@@ -1,8 +1,14 @@
 # ManifoldNormal.jl
 
+This packages defines *distributions* and *noises* on manifolds.
+They are defined as follows:
+- A *distribution* is a fully prescribed probability distribution on a given manifold; an example is the [`ProjLogNormal`](@ref) distribution.
+- A *noise* is a distribution parameterized by a point on a manifold; examples are [`IsotropicNoise`](@ref), [`ActionNoise`](@ref) and [`NoNoise`](@ref).
+
 ## Noise Models
 
 A general interface for noises on manifolds.
+
 
 ```jldoctest noise_example
 using ManifoldsBase
@@ -41,14 +47,63 @@ is_point(M, y)
 true
 ```
 
+### Interface
+
+All the noises are subtypes of the `AbstractNoise` abstract type.
+The following methods are expected:
+
 ```@autodocs
 Modules = [ManifoldNormal]
-Pages = ["Noise.jl", "Noise/Action.jl", "Noise/Isotropic.jl", "Noise/NoNoise.jl"]
+Pages = ["Noise.jl"]
+Order = [:function]
+```
+
+
+
+### Methods
+
+#### Action Noise
+
+Consider a group action ``G ⊂ \mathrm{Diff}(M)``.
+The push-forward of a normal distribution on a Lie algebra.
+The push-forward at a point ``x\in M`` is done by the function ``F(ξ)`` defined by
+```math
+F(ξ) = \exp(ξ)⋅ x
+```
+
+```@autodocs
+Modules = [ManifoldNormal]
+Pages = ["Noise/Action.jl"]
 Order = [:type, :function]
 ```
 
-## Normal Distributions
+#### Isotropic Noise
 
+This noise at a point ``x`` on a metric manifold ``M``
+is the push-forward by the metric exponential of a centred normal distribution
+on the tangent space ``T_x M``.
+The covariance of that normal distribution is equal to the metric at that point ``x``.
+
+```@autodocs
+Modules = [ManifoldNormal]
+Pages = ["Noise/Isotropic.jl"]
+Order = [:type, :function]
+```
+
+#### No Noise
+
+A convenient noise which is just the point-mass distribution at a point ``x``
+on any manifold.
+
+```@autodocs
+Modules = [ManifoldNormal]
+Pages = ["Noise/NoNoise.jl"]
+Order = [:type]
+```
+
+## Projected Normal Distributions
+
+This is essentially an [`ActionNoise`](@ref) but with a fixed reference point.
 
 ```@autodocs
 Modules = [ManifoldNormal]

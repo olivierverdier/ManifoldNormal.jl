@@ -25,7 +25,7 @@ function get_covariance_at end
 The basis given by the noise model at the point x.
 """
 function get_basis_at end
-"""
+@doc raw"""
     add_noise(::AbstractNoise, ::Random.AbstractRNG, x::TX) :: TX
 
 Add noise at point x.
