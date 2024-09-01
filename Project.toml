@@ -15,7 +15,7 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 [compat]
 Distributions = "0.25"
 ManifoldGroupUtils = "0.2"
-Manifolds = "0.9"
+Manifolds = "0.9, 0.10"
 ManifoldsBase = "0.15"
 PDMats = "0.11"
 PDMatsSingular = "0.1"
