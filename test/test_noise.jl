@@ -120,6 +120,7 @@ end
     expected = PDMats.ScalMat(3, σ)
     @test isapprox(computed, expected)
     @test_throws ErrorException ManifoldNormal.get_lie_covariance_at(noise, [0,0,0])
+    @test_throws ErrorException ManifoldNormal.get_lie_covariance_at(noise, [1, 0, 0], DefaultOrthonormalBasis())
     @test cov == PDMats.ScalMat(2, σ)
 
 end

@@ -34,6 +34,7 @@ end
     A = Manifolds.ColumnwiseMultiplicationAction(M, G)
     μ = [1., 0, 0]
     Σ = PDMats.ScalMat(3, 1.)
+    @test isapprox(Distributions.cov(ProjLogNormal(A, μ, 1.)), Σ)
     B = DefaultOrthonormalBasis()
     dist = ProjLogNormal(A, μ, Σ, B)
     x = rand(rng, dist)
