@@ -28,6 +28,11 @@ export AbstractActionDistribution, AbstractProcessDistribution,
     update_mean_cov, update_mean,
     sample
 
+# deprecated
+const AbstractProjLogNormal = AbstractActionDistribution
+@deprecate ProjLogNormal(args...) ActionDistribution(args...)
+export ProjLogNormal, AbstractProjLogNormal
+
 export get_action
 
 end

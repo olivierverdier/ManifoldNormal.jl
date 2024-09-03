@@ -42,6 +42,7 @@ struct ActionDistribution{TA<:AbstractGroupAction{LeftAction},TM,TN} <: Abstract
     end
 end
 
+
 const ProcessDistribution{TA} = ActionDistribution{TA}
 
 Base.show(io::IO, dist::ActionDistribution) = print(io, "ActionDistribution($(dist.μ), $(dist.noise))")
