@@ -13,14 +13,17 @@ include("Noise.jl")
 include("ActionDistribution.jl")
 
 # Noise
-export AbstractNoise, AbstractActionNoise,
-    ActionNoise, IsotropicNoise,
+export AbstractNoise,
+    AbstractActionNoise, AbstractProcessNoise,
+    ActionNoise, ProcessNoise,
+    IsotropicNoise,
     NoNoise,
     sample_space,
     get_covariance_at,
     update_cov
 
-export AbstractActionDistribution, ActionDistribution,
+export AbstractActionDistribution, AbstractProcessDistribution,
+    ActionDistribution, ProcessDistribution,
     action_noise, scaled_distance,
     update_mean_cov, update_mean,
     sample
