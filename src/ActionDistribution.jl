@@ -2,6 +2,8 @@ abstract type ManifoldVariate{TM} <: Distributions.VariateForm end
 
 abstract type AbstractActionDistribution{TA<:AbstractGroupAction{LeftAction}} <: Distributions.Sampleable{ManifoldVariate{AbstractManifold}, Distributions.Continuous} end
 
+const AbstractProcessDistribution{TA} = AbstractActionDistribution{TA}
+
 #--------------------------------
 # AbstractActionDistribution Interface
 #--------------------------------
@@ -39,6 +41,8 @@ struct ActionDistribution{TA<:AbstractGroupAction{LeftAction},TM,TN} <: Abstract
         return new{typeof(noise.action), TM, TN}(μ, noise)
     end
 end
+
+const ProcessDistribution{TA} = ActionDistribution{TA}
 
 Base.show(io::IO, dist::ActionDistribution) = print(io, "ActionDistribution($(dist.μ), $(dist.noise))")
 
