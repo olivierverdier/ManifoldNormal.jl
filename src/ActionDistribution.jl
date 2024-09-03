@@ -1,50 +1,50 @@
 abstract type ManifoldVariate{TM} <: Distributions.VariateForm end
 
-abstract type AbstractProjLogNormal{TA<:AbstractGroupAction{LeftAction}} <: Distributions.Sampleable{ManifoldVariate{AbstractManifold}, Distributions.Continuous} end
+abstract type AbstractActionDistribution{TA<:AbstractGroupAction{LeftAction}} <: Distributions.Sampleable{ManifoldVariate{AbstractManifold}, Distributions.Continuous} end
 
 #--------------------------------
-# AbstractProjLogNormal Interface
+# AbstractActionDistribution Interface
 #--------------------------------
 """
-    get_action(d::AbstractProjLogNormal) :: AbstractGroupAction
+    get_action(d::AbstractActionDistribution) :: AbstractGroupAction
 
 The underlying action (i.e., the underlying homogeneous space).
 """
 function get_action end
 
 """
-    Distribution.mean(d::AbstractProjLogNormal) :: [element of manifold M]
-    Distribution.cov(d::AbstractProjLogNormal) :: [covariance in Alg(G)]
+    Distribution.mean(d::AbstractActionDistribution) :: [element of manifold M]
+    Distribution.cov(d::AbstractActionDistribution) :: [covariance in Alg(G)]
 
 The mean and covariance of the distribution.
 """
 
 @doc raw"""
-    get_lie_basis(d::AbstractProjLogNormal) :: Basis
+    get_lie_basis(d::AbstractActionDistribution) :: Basis
 
 The basis of ``\mathfrak{g}`` in which the covariance is defined.
 """
 function get_lie_basis end
 
 """
-    ProjLogNormal(action::Action, μ, Σ::PDMat, B::Basis)
+    ActionDistribution(action::Action, μ, Σ::PDMat, B::Basis)
 
 Wrapped exponential distribution on the space of the given action.
 """
-struct ProjLogNormal{TA<:AbstractGroupAction{LeftAction},TM,TN} <: AbstractProjLogNormal{TA}
+struct ActionDistribution{TA<:AbstractGroupAction{LeftAction},TM,TN} <: AbstractActionDistribution{TA}
     μ::TM # mean: element of M
     noise::TN
-    function ProjLogNormal(μ::TM, noise::TN) where {TM,TN}
+    function ActionDistribution(μ::TM, noise::TN) where {TM,TN}
         @assert is_point(sample_space(noise), μ)
         return new{typeof(noise.action), TM, TN}(μ, noise)
     end
 end
 
-Base.show(io::IO, dist::ProjLogNormal) = print(io, "ProjLogNormal($(dist.μ), $(dist.noise))")
+Base.show(io::IO, dist::ActionDistribution) = print(io, "ActionDistribution($(dist.μ), $(dist.noise))")
 
-ProjLogNormal(action, μ, Σ, B=DefaultOrthonormalBasis()) = ProjLogNormal(μ, ActionNoise(action, PDMats.AbstractPDMat(Σ), B))
+ActionDistribution(action, μ, Σ, B=DefaultOrthonormalBasis()) = ActionDistribution(μ, ActionNoise(action, PDMats.AbstractPDMat(Σ), B))
 
-function ProjLogNormal(
+function ActionDistribution(
     A, # action
     x, # in M
     σ :: Number, # isotropic variance
@@ -53,37 +53,37 @@ function ProjLogNormal(
     G = base_group(A)
     dim = manifold_dimension(G)
     Σ = PDMats.ScalMat(dim, σ)
-    return ProjLogNormal(A, x, Σ, B)
+    return ActionDistribution(A, x, Σ, B)
 end
 
 
-Distributions.cov(d::ProjLogNormal) = d.noise.covariance()
-Distributions.mean(d::ProjLogNormal) = d.μ
-get_action(d::ProjLogNormal) = d.noise.action
-get_lie_basis(d::ProjLogNormal) = d.noise.basis
+Distributions.cov(d::ActionDistribution) = d.noise.covariance()
+Distributions.mean(d::ActionDistribution) = d.μ
+get_action(d::ActionDistribution) = d.noise.action
+get_lie_basis(d::ActionDistribution) = d.noise.basis
 
 """
-    update_mean_cov(d::ProjLogNormal, μ, Σ)
+    update_mean_cov(d::ActionDistribution, μ, Σ)
 
-Return new `ProjLogNormal` object with new mean ``μ`` and covariance ``Σ``.
+Return new `ActionDistribution` object with new mean ``μ`` and covariance ``Σ``.
 """
-update_mean_cov(d::ProjLogNormal{<:Any,TM}, μ::TM, Σ) where {TM}  = ProjLogNormal(μ, update_cov(d.noise, Σ))
+update_mean_cov(d::ActionDistribution{<:Any,TM}, μ::TM, Σ) where {TM}  = ActionDistribution(μ, update_cov(d.noise, Σ))
 
 """
-    update_mean_cov(d::ProjLogNormal, μ)
+    update_mean_cov(d::ActionDistribution, μ)
 
-Return new `ProjLogNormal` object with new mean ``μ``.
+Return new `ActionDistribution` object with new mean ``μ``.
 """
-update_mean(d::ProjLogNormal, x) = update_mean_cov(d, x, Distributions.cov(d))
+update_mean(d::ActionDistribution, x) = update_mean_cov(d, x, Distributions.cov(d))
 
-function Base.length(d::ProjLogNormal)
+function Base.length(d::ActionDistribution)
     M = group_manifold(get_action(d))
     return manifold_dimension(M)
 end
 
 function rand!(
     rng::Random.AbstractRNG,
-    d::AbstractProjLogNormal,
+    d::AbstractActionDistribution,
     out::AbstractArray,
     ) 
     rc = sample(rng, Distributions.cov(d))
@@ -96,7 +96,7 @@ end
 
 function Base.rand(
     rng::Random.AbstractRNG,
-    d::AbstractProjLogNormal,
+    d::AbstractActionDistribution,
     )
     M = sample_space(d.noise)
     x = allocate_result(M, typeof(rand))
@@ -105,18 +105,18 @@ function Base.rand(
 end
 
 """
-    action_noise(D::ProjLogNormal) :: ActionNoise
+    action_noise(D::ActionDistribution) :: ActionNoise
 
-Create an action noise object from a `ProjLogNormal` distribution.
+Create an action noise object from a `ActionDistribution` distribution.
 This is simply an action noise with constant covariance.
 """
-action_noise(D::AbstractProjLogNormal) = D.noise
+action_noise(D::AbstractActionDistribution) = D.noise
 
 
 @doc raw"""
-    scaled_distance(D::ProjLogNormal, x)
+    scaled_distance(D::ActionDistribution, x)
 
-Start with a `ProjLogNormal(μ,Σ)` distribution with mean ``μ`` lying
+Start with a `ActionDistribution(μ,Σ)` distribution with mean ``μ`` lying
 on the sample manifold ``M``, and
 covariance ``Σ`` in the Lie algebra ``\mathfrak{g}`` of the group ``G``.
 The infinitesimal action of the group ``G``
@@ -132,7 +132,7 @@ One then measures the scaled distance from
 (where ``v`` is regarded as a column matrix here)
 and ``n`` is the dimension of the sample manifold ``M``.
 """
-function scaled_distance(D::AbstractProjLogNormal, x)
+function scaled_distance(D::AbstractActionDistribution, x)
     noise = action_noise(D)
     B = DefaultOrthonormalBasis()
     x0 = Distributions.mean(D)

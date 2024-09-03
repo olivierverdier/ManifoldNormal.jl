@@ -2,7 +2,7 @@
 
 This packages defines *distributions* and *noises* on manifolds.
 They are defined as follows:
-- A *distribution* is a fully prescribed probability distribution on a given manifold; an example is the [`ProjLogNormal`](@ref) distribution.
+- A *distribution* is a fully prescribed probability distribution on a given manifold; an example is the [`ActionDistribution`](@ref) distribution.
 - A *noise* is a distribution parameterized by a point on a manifold; examples are [`IsotropicNoise`](@ref), [`ActionNoise`](@ref) and [`NoNoise`](@ref).
 
 ## Noise Models
@@ -101,12 +101,12 @@ Pages = ["Noise/NoNoise.jl"]
 Order = [:type]
 ```
 
-## Projected Normal Distributions
+## Action Distributions
 
 This is essentially an [`ActionNoise`](@ref) but with a fixed reference point.
 
 ```@autodocs
 Modules = [ManifoldNormal]
-Pages = ["ProjLogNormal.jl"]
+Pages = ["ActionDistribution.jl"]
 Order = [:type, :function]
 ```

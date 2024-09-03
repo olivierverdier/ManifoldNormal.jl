@@ -126,11 +126,11 @@ function add_noise(
     rng::Random.AbstractRNG,
     point)
     cov = noise.covariance(point)
-    dist = ProjLogNormal(noise.action, point, cov, noise.basis)
+    dist = ActionDistribution(noise.action, point, cov, noise.basis)
     return rand(rng, dist)
 end
 
-add_noise(noise::ActionNoise{<:Any, <:Returns}, rng::Random.AbstractRNG, point) = rand(rng, ProjLogNormal(point, noise))
+add_noise(noise::ActionNoise{<:Any, <:Returns}, rng::Random.AbstractRNG, point) = rand(rng, ActionDistribution(point, noise))
 
 # COV_EXCL_START
 """

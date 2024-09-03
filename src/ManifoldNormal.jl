@@ -10,7 +10,7 @@ import PDMatsSingular: sample
 import ManifoldGroupUtils as GU
 
 include("Noise.jl")
-include("ProjLogNormal.jl")
+include("ActionDistribution.jl")
 
 # Noise
 export AbstractNoise, AbstractActionNoise,
@@ -20,7 +20,7 @@ export AbstractNoise, AbstractActionNoise,
     get_covariance_at,
     update_cov
 
-export AbstractProjLogNormal, ProjLogNormal,
+export AbstractActionDistribution, ActionDistribution,
     action_noise, scaled_distance,
     update_mean_cov, update_mean,
     sample

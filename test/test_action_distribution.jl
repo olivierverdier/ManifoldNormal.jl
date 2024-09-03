@@ -19,24 +19,24 @@ rng = Random.default_rng()
     dG = manifold_dimension(G)
     mat = randn(rng, dG, dG)
     Σ = PDMats.PDMat(mat*mat')
-    D = ProjLogNormal(A, μ, Σ)
+    D = ActionDistribution(A, μ, Σ)
     # possible to initialise with a matrix
-    D_ = ProjLogNormal(A, μ, mat*mat')
-    @test_throws LinearAlgebra.PosDefException ProjLogNormal(A, μ, zeros(dG,dG))
+    D_ = ActionDistribution(A, μ, mat*mat')
+    @test_throws LinearAlgebra.PosDefException ActionDistribution(A, μ, zeros(dG,dG))
     apply!(get_action(D), similar(D.μ), identity_element(G), D.μ)
     rand(D)
-    @test_throws TypeError ProjLogNormal(switch_direction(A), μ, Σ)
+    @test_throws TypeError ActionDistribution(switch_direction(A), μ, Σ)
 end
 
-@testset "ProjLogNormal" begin
+@testset "ActionDistribution" begin
     G = SpecialOrthogonal(3)
     M = Sphere(2)
     A = Manifolds.ColumnwiseMultiplicationAction(M, G)
     μ = [1., 0, 0]
     Σ = PDMats.ScalMat(3, 1.)
-    @test isapprox(Distributions.cov(ProjLogNormal(A, μ, 1.)), Σ)
+    @test isapprox(Distributions.cov(ActionDistribution(A, μ, 1.)), Σ)
     B = DefaultOrthonormalBasis()
-    dist = ProjLogNormal(A, μ, Σ, B)
+    dist = ActionDistribution(A, μ, Σ, B)
     x = rand(rng, dist)
     rand(dist)
     @test scaled_distance(dist, [0., 1, 0]) == scaled_distance(dist, [0, 0, 1.])
@@ -51,10 +51,10 @@ end
     μ = [0, 0, 1.0]
     Σ = PDMats.PDiagMat([0.0, 0.0, 1.0])
     B = DefaultOrthonormalBasis()
-    dist = ProjLogNormal(A, μ, Σ, B)
+    dist = ActionDistribution(A, μ, Σ, B)
     noise = action_noise(dist)
     @test length(dist) == 2
     @test noise(rng, μ) ≈ μ
-    @test startswith(sprint(show, dist), "ProjLogNormal")
+    @test startswith(sprint(show, dist), "ActionDistribution")
 end
 
