@@ -1,5 +1,4 @@
 using Manifolds: LinearAlgebra
-using Test
 using Manifolds
 
 using PDMats
