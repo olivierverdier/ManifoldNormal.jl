@@ -29,9 +29,9 @@ The basis of ``\mathfrak{g}`` in which the covariance is defined.
 function get_lie_basis end
 
 """
-    ActionDistribution(action::Action, μ, Σ::PDMat, B::Basis)
+    ActionDistribution(μ, noise::ActionNoise)
 
-Wrapped exponential distribution on the space of the given action.
+Distribution stemming from an action noise specialized at one point.
 """
 struct ActionDistribution{TA<:AbstractGroupAction{LeftAction},TM,TN} <: AbstractActionDistribution{TA}
     μ::TM # mean: element of M
@@ -47,6 +47,11 @@ const ProcessDistribution{TA} = ActionDistribution{TA}
 
 Base.show(io::IO, dist::ActionDistribution) = print(io, "ActionDistribution($(dist.μ), $(dist.noise))")
 
+"""
+    ActionDistribution(action::Action, μ, Σ::PDMat, B::Basis)
+
+Create an action distribution from the given action, mean and covariance.
+"""
 ActionDistribution(action, μ, Σ, B=DefaultOrthonormalBasis()) = ActionDistribution(μ, ActionNoise(action, PDMats.AbstractPDMat(Σ), B))
 
 function ActionDistribution(
