@@ -135,6 +135,33 @@ end
 
 add_noise(noise::ActionNoise{<:Any, <:Returns}, rng::Random.AbstractRNG, point) = rand(rng, ActionDistribution(point, noise))
 
+_side_to_direction(::LeftSide) = RightAction()
+_side_to_direction(::RightSide) = LeftAction()
+
+@doc raw"""
+    adjoint_noise(noise::ActionNoise{<:GroupOperationAction})
+
+If the noise is defined by a group operation action,
+compute the corresponding noise for the action with switched sides.
+It is based on the identities
+```math
+χ \exp(ξ) = \exp(χ ξ χ^{-1}) χ
+```
+and
+```math
+\exp(ξ) χ = χ \exp(χ^{-1} ξ χ)
+```
+"""
+adjoint_noise(noise::ActionNoise{<:GroupOperationAction{<:LeftAction, S}}) where S = begin
+    G = base_group(noise.action)
+    cov_(χ) = begin
+        ad = GU.matrix_from_lin_endomorphism(G, ξ -> adjoint_action(G, χ, ξ, _side_to_direction(S())), noise.basis)
+        return PDMats.AbstractPDMat(PDMats.X_A_Xt(noise.covariance(χ), ad))
+    end
+    action_ = GroupOperationAction(G, (LeftAction(), switch_side(S())))
+    return ActionNoise(action_, cov_, noise.basis)
+end
+
 # COV_EXCL_START
 """
 Obsolete: in this basis, the covariance matrix is the identity.

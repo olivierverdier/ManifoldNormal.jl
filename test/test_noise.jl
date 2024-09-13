@@ -123,3 +123,33 @@ end
     @test cov == PDMats.ScalMat(2, σ)
 
 end
+
+"""
+    check_adjoint_noise_involution(noise, χ)
+
+When applied twice, `adjoint_noise` returns the same noise.
+This is checked by computing the covariance at the point `χ`.
+"""
+check_adjoint_noise_involution(noise, χ) = begin
+    n_ = adjoint_noise(noise)
+    n__ = adjoint_noise(n_)
+    computed = n__.covariance(χ)
+    expected = noise.covariance(χ)
+    return isapprox(computed, expected)
+end
+
+@testset for G in [
+    SpecialOrthogonal(3)
+]
+    A = GroupOperationAction(G, (LeftAction(), LeftSide()))
+    d = manifold_dimension(G)
+    M = randn(rng, (d, d))
+    Σ = PDMats.AbstractPDMat(M * M')
+    noise = ActionNoise(A, Σ)
+    n_ = adjoint_noise(noise)
+    n__ = adjoint_noise(n_)
+    χ1 = rand(rng, G)
+    χ2 = rand(rng, G)
+    @test isapprox(n__.covariance(χ1), n__.covariance(χ2))
+    @test check_adjoint_noise_involution(n_, χ1)
+end

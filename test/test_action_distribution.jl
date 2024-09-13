@@ -48,12 +48,13 @@ end
     M = Sphere(2)
     A = Manifolds.ColumnwiseMultiplicationAction(M, G)
     μ = [0, 0, 1.0]
-    Σ = PDMats.PDiagMat([0.0, 0.0, 1.0])
+    Σ(p) = PDMats.PDiagMat([abs(p[1]), abs(p[2]), abs(p[3])])
     B = DefaultOrthonormalBasis()
-    dist = ActionDistribution(A, μ, Σ, B)
-    noise = action_noise(dist)
-    @test length(dist) == 2
+    noise = ActionNoise(A, Σ, B)
     @test noise(rng, μ) ≈ μ
+    dist = ActionDistribution(μ, noise)
+    @test length(dist) == 2
+    @test rand(rng, dist) ≈ μ
     @test startswith(sprint(show, dist), "ActionDistribution")
 end
 

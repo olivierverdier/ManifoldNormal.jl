@@ -20,7 +20,8 @@ export AbstractNoise,
     NoNoise,
     sample_space,
     get_covariance_at,
-    update_cov
+    update_cov,
+    adjoint_noise
 
 export AbstractActionDistribution, AbstractProcessDistribution,
     ActionDistribution, ProcessDistribution,
