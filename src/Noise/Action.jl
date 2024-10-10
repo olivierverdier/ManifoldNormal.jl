@@ -45,7 +45,7 @@ const ProcessNoise{TA} = ActionNoise{TA}
 Base.show(io::IO, n::ActionNoise) = print(io, "ActionNoise($(n.action), $(n.covariance), $(n.basis))")
 
 
-sample_space(a::ActionNoise)  = group_manifold(a.action)
+sample_space(a::AbstractActionNoise)  = group_manifold(a.action)
 
 """
     ActionNoise(A::GroupAction, Σ::PDMat)

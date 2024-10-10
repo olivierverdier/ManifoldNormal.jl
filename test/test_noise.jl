@@ -122,6 +122,11 @@ end
     @test_throws ErrorException ManifoldNormal.get_lie_covariance_at(noise, [1, 0, 0], DefaultOrthonormalBasis())
     @test cov == PDMats.ScalMat(2, σ)
 
+    nn = NoActionNoise(A)
+    Z = ManifoldNormal.get_lie_covariance_at(nn, x, BG)
+    lie_cov = ManifoldNormal.get_lie_covariance_at(noise, x, BG)
+    new_lie_cov = lie_cov + Z
+    @test isapprox(lie_cov, new_lie_cov)
 end
 
 """

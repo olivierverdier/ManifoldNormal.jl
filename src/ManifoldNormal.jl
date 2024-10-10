@@ -16,6 +16,7 @@ include("ActionDistribution.jl")
 export AbstractNoise,
     AbstractActionNoise, AbstractProcessNoise,
     ActionNoise, ProcessNoise,
+    NoActionNoise, NoProcessNoise,
     IsotropicNoise,
     NoNoise,
     sample_space,

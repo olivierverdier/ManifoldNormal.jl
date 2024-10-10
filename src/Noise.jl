@@ -63,6 +63,7 @@ get_covariance_at(n::AbstractNoise, x) = get_covariance_at(n, x, get_basis_at(n,
 #--------------------------------
 
 include("Noise/Action.jl")
+include("Noise/NoActionNoise.jl")
 include("Noise/Isotropic.jl")
 include("Noise/NoNoise.jl")
 
