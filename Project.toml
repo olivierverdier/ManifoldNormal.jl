@@ -1,7 +1,7 @@
 name = "ManifoldNormal"
 uuid = "5fcb9600-4313-48cf-863b-acbfec9160af"
 authors = ["Olivier Verdier <olivier.verdier@gmail.com>"]
-version = "0.1.4"
+version = "0.1.5"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
