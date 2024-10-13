@@ -1,4 +1,4 @@
-using SparseArrays
+import SparseArrays
 # TODO: this is a weak dependency
 
 struct NoActionNoise{TA} <: AbstractActionNoise{TA}
