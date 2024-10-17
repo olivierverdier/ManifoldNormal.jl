@@ -22,7 +22,7 @@ export AbstractNoise,
     sample_space,
     get_covariance_at,
     update_cov,
-    adjoint_noise
+    adjoint_noise, adjoint_distribution
 
 export AbstractActionDistribution, AbstractProcessDistribution,
     ActionDistribution, ProcessDistribution,

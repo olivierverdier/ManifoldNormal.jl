@@ -139,6 +139,8 @@ This is simply an action noise with constant covariance.
 """
 action_noise(D::AbstractActionDistribution) = D.noise
 
+adjoint_distribution(D::ActionDistribution{<:GroupOperationAction}) = ActionDistribution(Distributions.mean(D), adjoint_noise(D.noise))
+
 
 @doc raw"""
     scaled_distance(D::ActionDistribution, x)

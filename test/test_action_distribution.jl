@@ -75,5 +75,21 @@ end
         coords = get_coordinates(G, identity_element(G), rnd_lie, ManifoldNormal.get_lie_basis(dist))
         @test all(first(coords, 2) .≈ 0)
     end
+
+    # adjoint distribution only makes sense on groups
+    @test_throws MethodError adjoint_distribution(dist)
+end
+
+@testset "adjoint distribution" for G in
+    [
+        Orthogonal(3),
+    ]
+    A = GroupOperationAction(G)
+    χ = rand(rng, G)
+    diags = randn(rng, manifold_dimension(G))
+    dist = ActionDistribution(A, χ, PDMats.PDiagMat(abs.(diags)))
+    dist_ = adjoint_distribution(dist)
+    dist__ = adjoint_distribution(dist_)
+    Distributions.cov(dist__) ≈ Distributions.cov(dist)
 end
 
