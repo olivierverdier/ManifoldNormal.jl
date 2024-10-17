@@ -67,8 +67,8 @@ function ActionDistribution(
 end
 
 
-Distributions.cov(d::ActionDistribution) = d.noise.covariance(d.μ)
 Distributions.mean(d::ActionDistribution) = d.μ
+Distributions.cov(d::ActionDistribution) = get_lie_covariance_at(d.noise, Distributions.mean(d))
 get_action(d::ActionDistribution) = d.noise.action
 get_lie_basis(d::ActionDistribution) = d.noise.basis
 

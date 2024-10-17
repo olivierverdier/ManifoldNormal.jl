@@ -48,7 +48,7 @@ end
     M = Sphere(2)
     A = Manifolds.ColumnwiseMultiplicationAction(M, G)
     μ = [0, 0, 1.0]
-    Σ(p) = PDMats.PDiagMat([abs(p[1]), abs(p[2]), abs(p[3])])
+    Σ(p) = PDMats.PDiagMat(abs.(p))
     B = DefaultOrthonormalBasis()
     noise = ActionNoise(A, Σ, B)
     @test noise(rng, μ) ≈ μ
