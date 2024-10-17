@@ -36,9 +36,10 @@ Distribution stemming from an action noise specialized at one point.
 struct ActionDistribution{TA<:AbstractGroupAction{LeftAction},TM,TN} <: AbstractActionDistribution{TA}
     μ::TM # mean: element of M
     noise::TN
-    function ActionDistribution(μ::TM, noise::TN) where {TM,TN}
+    function ActionDistribution(μ::TM, noise::TN) where {TM,TN<:AbstractNoise}
         @assert is_point(sample_space(noise), μ)
-        return new{typeof(noise.action), TM, TN}(μ, noise)
+        cnoise = constant_noise_at(noise, μ)
+        return new{typeof(noise.action), TM, typeof(cnoise)}(μ, cnoise)
     end
 end
 

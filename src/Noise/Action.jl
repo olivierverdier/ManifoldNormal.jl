@@ -82,6 +82,8 @@ New action noise with same action and basis but with new (possibly point depende
 """
 update_cov(n::ActionNoise, Σ) = ActionNoise(n.action, Σ, n.basis)
 
+constant_noise_at(n::ActionNoise, x) = update_cov(n, Returns(get_lie_covariance_at(n, x)))
+
 _basis_error_message(B1, B2) = "Changing from basis\n\t$B1\nto\n\t$B2\nis not implemented"
 
 function get_lie_covariance_at(

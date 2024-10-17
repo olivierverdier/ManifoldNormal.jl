@@ -52,12 +52,28 @@ end
     B = DefaultOrthonormalBasis()
     noise = ActionNoise(A, Σ, B)
     @test noise(rng, μ) ≈ μ
+
+    @testset "Constant Noise" begin
+        cnoise = ManifoldNormal.constant_noise_at(noise, μ)
+        x = [1,0,0]
+        not_expected = ManifoldNormal.get_lie_covariance_at(noise, x)
+        expected = ManifoldNormal.get_lie_covariance_at(noise, μ)
+        computed = ManifoldNormal.get_lie_covariance_at(cnoise, x)
+        @test computed ≠ not_expected
+        @test computed ≈ expected
+    end
+
     dist = ActionDistribution(μ, noise)
+    @test !(noise isa ActionNoise{<:Any, <:Returns})
+    @test action_noise(dist) isa ActionNoise{<:Any, <:Returns}
     @test length(dist) == 2
     @test rand(rng, dist) ≈ μ
     @test startswith(sprint(show, dist), "ActionDistribution")
-    rnd_lie = ManifoldNormal.random_vector_lie(rng, dist)
-    coords = get_coordinates(G, identity_element(G), rnd_lie, ManifoldNormal.get_lie_basis(dist))
-    @test all(first(coords, 2) .≈ 0)
+
+    @testset "random_vector_lie" begin
+        rnd_lie = ManifoldNormal.random_vector_lie(rng, dist)
+        coords = get_coordinates(G, identity_element(G), rnd_lie, ManifoldNormal.get_lie_basis(dist))
+        @test all(first(coords, 2) .≈ 0)
+    end
 end
 
