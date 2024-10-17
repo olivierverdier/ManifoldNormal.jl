@@ -17,4 +17,6 @@ add_noise(::NoActionNoise, ::Random.AbstractRNG, x) = x
 
 rescale_noise(n::NoActionNoise, ::Any) = n
 
+_compute_adjoint_noise(::NoActionNoise, ::Any, action_, ::Any) = NoActionNoise(action_)
+
 # TODO: `get_covariance_at` is missing

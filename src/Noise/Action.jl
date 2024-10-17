@@ -152,15 +152,21 @@ and
 \exp(ξ) χ = χ \exp(χ^{-1} ξ χ)
 ```
 """
-adjoint_noise(noise::ActionNoise{<:GroupOperationAction{<:LeftAction, S}}) where S = begin
+adjoint_noise(noise::AbstractActionNoise{<:GroupOperationAction{<:LeftAction, S}}) where S = begin
     G = base_group(noise.action)
+    side = S()
+    action_ = GroupOperationAction(G, (LeftAction(), switch_side(side)))
+    return _compute_adjoint_noise(noise, G, action_, side)
+end
+
+_compute_adjoint_noise(noise::ActionNoise, G, action_, side) = begin
     cov_(χ) = begin
-        ad = GU.matrix_from_lin_endomorphism(G, ξ -> adjoint_action(G, χ, ξ, _side_to_direction(S())), noise.basis)
+        ad = GU.matrix_from_lin_endomorphism(G, ξ -> adjoint_action(G, χ, ξ, _side_to_direction(side)), noise.basis)
         return PDMats.AbstractPDMat(PDMats.X_A_Xt(noise.covariance(χ), ad))
     end
-    action_ = GroupOperationAction(G, (LeftAction(), switch_side(S())))
     return ActionNoise(action_, cov_, noise.basis)
 end
+
 
 # COV_EXCL_START
 """

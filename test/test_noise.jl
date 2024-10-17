@@ -138,8 +138,8 @@ This is checked by computing the covariance at the point `χ`.
 check_adjoint_noise_involution(noise, χ) = begin
     n_ = adjoint_noise(noise)
     n__ = adjoint_noise(n_)
-    computed = n__.covariance(χ)
-    expected = noise.covariance(χ)
+    computed = ManifoldNormal.get_lie_covariance_at(n__, χ)
+    expected = ManifoldNormal.get_lie_covariance_at(noise, χ)
     return isapprox(computed, expected)
 end
 
@@ -150,11 +150,17 @@ end
     d = manifold_dimension(G)
     M = randn(rng, (d, d))
     Σ = PDMats.AbstractPDMat(M * M')
-    noise = ActionNoise(A, Σ)
-    n_ = adjoint_noise(noise)
-    n__ = adjoint_noise(n_)
-    χ1 = rand(rng, G)
-    χ2 = rand(rng, G)
-    @test isapprox(n__.covariance(χ1), n__.covariance(χ2))
-    @test check_adjoint_noise_involution(n_, χ1)
+    @testset for noise in
+        [
+            ActionNoise(A, Σ),
+            NoActionNoise(A),
+        ]
+        n_ = adjoint_noise(noise)
+        n__ = adjoint_noise(n_)
+        χ1 = rand(rng, G)
+        χ2 = rand(rng, G)
+        # @test isapprox(n__.covariance(χ1), n__.covariance(χ2))
+        @test isapprox(ManifoldNormal.get_lie_covariance_at(n__, χ1), ManifoldNormal.get_lie_covariance_at(n__, χ2))
+        @test check_adjoint_noise_involution(n_, χ1)
+    end
 end
