@@ -56,5 +56,8 @@ end
     @test length(dist) == 2
     @test rand(rng, dist) ≈ μ
     @test startswith(sprint(show, dist), "ActionDistribution")
+    rnd_lie = ManifoldNormal.random_vector_lie(rng, dist)
+    coords = get_coordinates(G, identity_element(G), rnd_lie, ManifoldNormal.get_lie_basis(dist))
+    @test all(first(coords, 2) .≈ 0)
 end
 

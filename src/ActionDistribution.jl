@@ -91,16 +91,32 @@ function Base.length(d::ActionDistribution)
     return manifold_dimension(M)
 end
 
+"""
+    random_vector_lie(
+        rng::Random.AbstractRNG,
+        d::AbstractActionDistribution) = begin
+
+Draw a random vector in the Lie algebra following the
+covariance in the Lie algebra.
+"""
+random_vector_lie(
+      rng::Random.AbstractRNG,
+      d::AbstractActionDistribution) = begin
+    rc = sample(rng, Distributions.cov(d))
+    G = base_group(get_action(d))
+    ξ = get_vector_lie(G, rc, get_lie_basis(d))
+    return ξ
+end
+
 function rand!(
     rng::Random.AbstractRNG,
     d::AbstractActionDistribution,
     out::AbstractArray,
-    ) 
-    rc = sample(rng, Distributions.cov(d))
-    G = base_group(get_action(d))
-    ξ = get_vector_lie(G, rc, get_lie_basis(d))
-    χ = exp_lie(G, ξ)
-    apply!(get_action(d), out, χ, Distributions.mean(d))
+)
+    ξ = random_vector_lie(rng, d)
+    A = get_action(d)
+    χ = exp_lie(base_group(A), ξ)
+    apply!(A, out, χ, Distributions.mean(d))
     return out
 end
 
